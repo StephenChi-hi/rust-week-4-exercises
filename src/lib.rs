@@ -25,7 +25,7 @@ pub struct Point<T> {
 impl<T> Point<T> {
     pub fn new(x: T, y: T) -> Self {
         // TODO: Implement constructor for Point
-        Point {x, y}
+        Point { x, y }
     }
 }
 
@@ -33,7 +33,7 @@ impl<T> Point<T> {
 pub trait BitcoinSerialize {
     fn serialize(&self) -> Vec<u8> {
         // TODO: Implement serialization to bytes
-        Vec::new() 
+        Vec::new()
     }
 }
 
@@ -178,25 +178,12 @@ impl TryFrom<&[u8]> for LegacyTransaction {
             return Err(BitcoinError::InvalidTransaction);
         }
 
-        // Parse version (first 4 bytes, little-endian i32)
-        let version = i32::from_le_bytes([
-            data[0], data[1], data[2], data[3],
-        ]);
+        let version = i32::from_le_bytes([data[0], data[1], data[2], data[3]]);
 
-        // Parse inputs count (next 4 bytes, little-endian u32)
-        let inputs_count = u32::from_le_bytes([
-            data[4], data[5], data[6], data[7],
-        ]) as usize;
+        let inputs_count = u32::from_le_bytes([data[4], data[5], data[6], data[7]]) as usize;
 
-        // Parse outputs count (next 4 bytes, little-endian u32)
-        let outputs_count = u32::from_le_bytes([
-            data[8], data[9], data[10], data[11],
-        ]) as usize;
-
-        // Parse lock_time (last 4 bytes, little-endian u32)
-        let lock_time = u32::from_le_bytes([
-            data[12], data[13], data[14], data[15],
-        ]);
+        let outputs_count = u32::from_le_bytes([data[8], data[9], data[10], data[11]]) as usize;
+        let lock_time = u32::from_le_bytes([data[12], data[13], data[14], data[15]]);
 
         Ok(LegacyTransaction {
             version,
@@ -212,9 +199,7 @@ impl BitcoinSerialize for LegacyTransaction {
     fn serialize(&self) -> Vec<u8> {
         // TODO: Serialize only version and lock_time (simplified)
         let mut result = Vec::new();
-        // Add version (i32 as 4 bytes, little-endian)
         result.extend_from_slice(&self.version.to_le_bytes());
-        // Add lock_time (u32 as 4 bytes, little-endian)
         result.extend_from_slice(&self.lock_time.to_le_bytes());
         result
     }
